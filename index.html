@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ember can React</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      @import url(//fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(//fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      a, a:active, a:hover, a:visited {
+        color: rgb(183, 48, 1);
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Ember can React
+
+### a component based react-ember comparison
+
+---
+
+class: center, middle
+
+## [@heycarsten](http://twitter.com/heycarsten) & [@ghedamat](http://twitter.com/ghedamat)
+
+### [Unspace](http://unspace.ca)
+
+---
+
+# Agenda
+
+1. Why?
+2. The problem
+3. How to React
+4. Can Ember do the same?
+
+---
+
+# Why?
+
+## Ember 2.0 is coming!
+
+## Bindings DOWN
+## Actions UP
+
+---
+
+# Why?
+
+## React already does this
+
+## We want to explore how we can already do it in Ember
+
+---
+
+# The Problem
+
+## [lcboapi.com](https://lcboapi.com)
+
+## Insert image of the search widget here
+
+---
+
+# The Problem
+
+## select from default api endpoints
+## customize the query
+## display the results with syntax highlighting
+
+---
+
+# Component all the things
+
+## Add MEME
+
+## Warning Code dump ahead
+
+---
+
+# How to React
+
+## Component layout
+```html
+<TryItComponent>
+  <div className="try-it-component">
+    <div className="control-bar">
+      <TryItEndpointSelector />
+      <TryItEndpointPathInput />
+    </div>
+    <TryItConsole/>
+  </div>
+</TryItComponent>
+```
+
+---
+
+# TryItComponent
+
+## Holds all the state
+```javascript
+var TryItComponent = React.createClass({
+  getInitialState: function() {
+    return {
+      endpoints: ENDPOINTS,
+      key: ENDPOINTS[0].key,
+      path: ENDPOINTS[0].path,
+      json: '{}'
+    }
+  },
+
+  loadJSON: function() { /*...*/  },
+  handleSelected: function(endpoint) { /*...*/  },
+  handleSubmit: function(data) { /*...*/  },
+  handlePathChange: function(path) { /*...*/  },
+  componentDidMount: function() { this.loadJSON(); },
+  render: function() { return ( /* JSX here */ ); }
+});
+```
+
+---
+
+# TryItComponent
+
+## The render method (wiring up)
+```javascript
+var TryItComponent = React.createClass({
+  render: function() {
+    return (
+      <div className="try-it-component">
+        <div className="control-bar">
+          <TryItEndpointSelector selectedKey={this.state.key}
+                                 onSelected={this.handleSelected} />
+          <TryItEndpointPathInput path={this.state.path}
+                                  onPathChange={this.handlePathChange}
+                                  onSubmit={this.handleSubmit} />
+        </div>
+        <TryItConsole json={this.state.json} />
+      </div>
+    );
+  }
+});
+```
+
+---
+
+# TryItComponent
+
+## The render method (wiring up)
+```javascript
+var TryItComponent = React.createClass({
+  render: function() {
+    return (
+      <div className="try-it-component">
+        <div className="control-bar">
+          <TryItEndpointSelector selectedKey={this.state.key}
+                                 onSelected={this.handleSelected} />
+          <TryItEndpointPathInput path={this.state.path}
+                                  onPathChange={this.handlePathChange}
+                                  onSubmit={this.handleSubmit} />
+        </div>
+        <TryItConsole json={this.state.json} />
+      </div>
+    );
+  }
+});
+```
+---
+
+# TryItEndpointSelector
+
+### Holds only open/close state
+```javascript
+var TryItEndpointSelector = React.createClass({
+  getInitialState: function() {
+    return {
+      label: ENDPOINTS[0].label
+    };
+  },
+
+  handleSelect: function(endpoint) {
+    this.closeSelector();
+    this.props.onSelected(endpoint);
+  },
+
+  openSelector: function() {
+    this.setState({ isOpen: true });
+  },
+
+  closeSelector: function() {
+    this.setState({ isOpen: false });
+  },
+
+  render: function() {/* JSX */ }
+});
+```
+---
+
+# TryItEndpointSelector
+
+```javascript
+var TryItEndpointSelector = React.createClass({
+  /*...*/
+  render: function() {
+    var classes = React.addons.classSet({
+      'endpoint-selector': true,
+      'open': this.state.isOpen
+    });
+    /*...*/
+    if (this.state.isOpen) {
+      selector = (
+        <TryItEndpointSelectList
+          selectedKey={this.props.selectedKey}
+          onSelected={this.handleSelect}
+          onDismiss={this.closeSelector} />
+      );
+    } else {
+      selector = <div />;
+    }
+
+    return (
+      <div className={classes}>
+        <div onClick={this.openSelector} className="endpoint-selector-label">
+          {label}
+        </div>
+        {selector}
+      </div>
+    );
+  }
+});
+```
+
+---
+
+# TryItEndpointSelectList
+
+```javascript
+var TryItEndpointSelectList = React.createClass({
+  handleSelected: function(endpoint) {
+    this.props.onSelected(endpoint);
+  },
+
+  componentDidMount: function() {
+    var component = this;
+
+    $(document).one('click', function() {
+      component.props.onDismiss();
+      return true;
+    });
+  },
+
+  render: function() {
+    return (
+      <ol className="endpoint-selector-list">
+        {ENDPOINTS.map(function(endpoint) {
+          return <TryItEndpointOption
+            onSelected={this.handleSelected.bind(this, endpoint)}
+            key={endpoint.key}
+            selectedKey={this.props.selectedKey}
+            data={endpoint} />;
+        }, this)}
+      </ol>
+    );
+  }
+});
+```
+
+---
+
+# TryItEndpointOption & TryItEndpointPathInput
+
+### work in similar ways
+### once a an element is selected or the input field is active
+### the `onSubmit` or the `onSelected` callbacks are triggered
+
+---
+
+# TryItComponent
+
+```javascript
+var TryItComponent = React.createClass({
+  loadJSON: function() {
+    $.ajax({
+      url: 'http://lcboapi.com/' + this.state.path,
+      dataType: 'jsonp'
+    }).then(function(data) {
+      this.setState({
+        json: JSON.stringify(data, null, 2)
+      });
+    }.bind(this));
+  },
+  handleSelected: function(endpoint) {
+    this.setState({
+      key: endpoint.key,
+      path: endpoint.path,
+      label: endpoint.label
+    }, function() {
+      this.loadJSON();
+    }.bind(this));
+  },
+
+  handleSubmit: function(data) {
+    this.loadJSON();
+  },
+  handlePathChange: function(path) {
+    this.setState({ path: path });
+  }
+});
+```
+
+---
+
+# TryItConsole
+
+## receives the current json as a `props`
+```javascript
+var TryItComponent = React.createClass({
+  render: function() {
+    return (
+      ...
+        <TryItConsole json={this.state.json} />
+      ...
+    );
+  }
+});
+```
+
+---
+
+# TryItConsole
+
+## dangerouslySetInnerHTML !!!
+```javascript
+var TryItConsole = React.createClass({
+  componentDidUpdate: function() {
+    $(this.refs.codeDiv.getDOMNode()).scrollTop(0);
+  },
+
+  render: function() {
+    var html = Prism.highlight(this.props.json, Prism.languages.json);
+
+    return (
+      <div ref="codeDiv" className="console">
+        <pre><code dangerouslySetInnerHTML={{__html: html}} /></pre>
+      </div>
+    );
+  }
+});
+```
+
+---
+
+# How to React
+
+### state lives in `TryItComponent`
+### subcomponents get the state as `props`
+### subcomponents pass down callbacks
+### callbacks are called by subcomponents and "bubbled" up
+### `setState` in `TryItComponent`
+### Rerender all the things (with VirtuaDOM)
+    </textarea>
+    <script src="remark.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
