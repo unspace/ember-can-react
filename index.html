@@ -280,8 +280,8 @@ var TryItEndpointSelectList = React.createClass({
 # TryItEndpointOption & TryItEndpointPathInput
 
 ### work in similar ways
-### once a an element is selected or the input field is active
-### the `onSubmit` or the `onSelected` callbacks are triggered
+### once an element is selected or the input field is submitted
+### the `onSelected` or the `onSubmit` callbacks are triggered
 
 ---
 
@@ -368,6 +368,266 @@ var TryItConsole = React.createClass({
 ### callbacks are called by subcomponents and "bubbled" up
 ### `setState` in `TryItComponent`
 ### Rerender all the things (with VirtuaDOM)
+
+---
+
+# Ember can React!
+
+## Components layout
+```html
+<script type="text/x-handlebars" data-template-name="components/try-it">
+  <div class="control-bar">
+    {{try-it-endpoint-selector
+      selectedEndpoint=selectedEndpoint
+      selected="didSelectEndpoint"}}
+
+    {{try-it-endpoint-path-form
+      path=endpointPath
+      updated="didUpdatePath"}}
+  </div>
+
+  {{try-it-console json=json}}
+</script>
+```
+
+---
+class: center, middle
+
+# DONE
+
+---
+class: center, middle
+
+## Just kidding...
+---
+
+# TryItComponent
+
+## Holds all the state
+```javascript
+App.TryItComponent = Ember.Component.extend({
+  classNames: 'try-it-component',
+  selectedEndpoint: ENDPOINTS[0],
+  endpointPath: ENDPOINTS[0].path,
+  json: '{}',
+
+  actions: {
+    didSelectEndpoint: function(endpoint) {
+      this.set('selectedEndpoint', endpoint);
+      this.set('endpointPath', endpoint.path);
+      this.loadJSON(endpoint.path);
+    },
+
+    didUpdatePath: function(path) {
+      this.loadJSON(path);
+    }
+  },
+
+  loadJSON: function(path) { /*...*/ },
+
+  loadInitialJSON: function() { /*...*/ }.on('didInsertElement')
+});
+```
+
+---
+
+# TryItComponent
+
+## Wiring it up
+
+```html
+<script type="text/x-handlebars" data-template-name="components/try-it">
+  <div class="control-bar">
+    {{try-it-endpoint-selector
+      selectedEndpoint=selectedEndpoint
+      selected="didSelectEndpoint"}}
+
+    {{try-it-endpoint-path-form
+      path=endpointPath
+      updated="didUpdatePath"}}
+  </div>
+
+  {{try-it-console json=json}}
+</script>
+```
+### uses bindings and passes action names instead of callbacks
+### for now :)
+
+---
+
+# TryItEndpointSelector
+
+### Holds only open/close state
+
+```javascript
+
+App.TryItEndpointSelectorComponent = Ember.Component.extend({
+  classNames: 'endpoint-selector',
+  classNameBindings: 'isOpen:open',
+
+  actions: {
+    showList: function() {
+      this.set('isOpen', true);
+    },
+
+    dismissList: function() {
+      this.set('isOpen', false);
+    },
+
+    didSelectEndpoint: function(endpoint) {
+      this.sendAction('selected', endpoint);
+    }
+  }
+});
+```
+
+---
+
+# TryItEndpointSelector
+
+```html
+<script type="text/x-handlebars"
+        data-template-name="components/try-it-endpoint-selector">
+  <div class="endpoint-selector-label" {{action "showList"}}>
+    {{~selectedEndpoint.label~}}
+  </div>
+
+  {{#if isOpen}}
+    {{try-it-endpoint-selector-list
+      selectedEndpoint=selectedEndpoint
+      dismiss="dismissList"
+      selected="didSelectEndpoint"}}
+  {{/if}}
+</script>
+```
+
+---
+
+# TryItEndpointSelectorList
+
+```javascript
+App.TryItEndpointSelectorListComponent = Ember.Component.extend({
+  tagName: 'ol',
+  classNames: 'endpoint-selector-list',
+  endpoints: ENDPOINTS,
+
+  actions: {
+    didSelectEndpoint: function(endpoint) {
+      this.sendAction('selected', endpoint);
+    }
+  },
+
+  didInsertElement: function() {
+    var view = this;
+
+    Ember.run.next(function() {
+      Ember.$(document).one('click', function() {
+        view.sendAction('dismiss');
+      });
+    });
+
+  }
+});
+```
+
+---
+
+# TryItEndpointSelectorList
+
+```html
+<script type="text/x-handlebars"
+        data-template-name="components/try-it-endpoint-selector-list">
+  {{#each endpoint in endpoints}}
+    {{#try-it-endpoint-selector-list-item
+      endpoint=endpoint
+      selectedEndpoint=selectedEndpoint
+      selected="didSelectEndpoint"}}
+      {{endpoint.label}}
+    {{/try-it-endpoint-selector-list-item}}
+  {{/each}}
+</script>
+```
+---
+
+# TryItEndpointSelectorListItem & TryItEndpointPathForm
+
+### work in similar ways
+### once an element is selected or the input field is submitted
+### the `selected` or the `updated` actions are triggered
+
+---
+
+# TryItComponent
+```javascript
+App.TryItComponent = Ember.Component.extend({
+  /*...*/
+  actions: {
+    didSelectEndpoint: function(endpoint) {
+      this.set('selectedEndpoint', endpoint);
+      this.set('endpointPath', endpoint.path);
+      this.loadJSON(endpoint.path);
+    },
+    didUpdatePath: function(path) {
+      this.loadJSON(path);
+    }
+  },
+  loadJSON: function(path) {
+    var view = this;
+
+    $.ajax({
+      url: 'http://lcboapi.com/' + path,
+      dataType: 'jsonp'
+    }).then(function(data) {
+      view.set('json', JSON.stringify(data, null, 2));
+    });
+  },
+  /*...*/
+});
+```
+
+---
+
+# TryItConsole
+
+## receives the current json as a `binding`
+```html
+<script type="text/x-handlebars" data-template-name="components/try-it">
+  ...
+  {{try-it-console json=json}}
+  ...
+</script>
+```
+
+---
+
+# TryItConsole
+
+## receives the current json as a `binding`
+```javascript
+App.TryItConsoleComponent = Ember.Component.extend({
+  classNames: 'console',
+
+  highlightedJSON: function() {
+    return Prism.highlight(this.get('json'), Prism.languages.json);
+  }.property('json'),
+
+  didUpdateConsole: function() {
+    this.$().scrollTop(0);
+  }.observes('highlightedJSON').on('didInsertElement')
+});
+```
+
+---
+
+# How to Ember
+
+### state lives in `TryItComponent`
+### subcomponents get the state as `bindings` (that we use one way)
+### subcomponents pass down action names
+### actions are sent by subcomponents and "bubbled" up
+### `set` in `TryItComponent`
+### Rerender what's needed
+
     </textarea>
     <script src="remark.js">
     </script>
