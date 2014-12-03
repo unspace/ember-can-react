@@ -88,6 +88,13 @@ class: center, middle
 
 ---
 
+# Full Code example & Demo
+
+## [react](http://emberjs.jsbin.com/temuxi/latest/edit?html,js,output)
+## [ember](http://emberjs.jsbin.com/hiqini/latest/edit?html,js,output)
+
+---
+
 # How to React
 
 ## Component layout
@@ -152,29 +159,6 @@ var TryItComponent = React.createClass({
 });
 ```
 
----
-
-# TryItComponent
-
-## The render method (wiring up)
-```javascript
-var TryItComponent = React.createClass({
-  render: function() {
-    return (
-      <div className="try-it-component">
-        <div className="control-bar">
-          <TryItEndpointSelector selectedKey={this.state.key}
-                                 onSelected={this.handleSelected} />
-          <TryItEndpointPathInput path={this.state.path}
-                                  onPathChange={this.handlePathChange}
-                                  onSubmit={this.handleSubmit} />
-        </div>
-        <TryItConsole json={this.state.json} />
-      </div>
-    );
-  }
-});
-```
 ---
 
 # TryItEndpointSelector
@@ -367,7 +351,6 @@ var TryItConsole = React.createClass({
 ### subcomponents pass down callbacks
 ### callbacks are called by subcomponents and "bubbled" up
 ### `setState` in `TryItComponent`
-### Rerender all the things (with VirtuaDOM)
 
 ---
 
@@ -626,8 +609,22 @@ App.TryItConsoleComponent = Ember.Component.extend({
 ### subcomponents pass down action names
 ### actions are sent by subcomponents and "bubbled" up
 ### `set` in `TryItComponent`
-### Rerender what's needed
 
+---
+
+# It ain't that different
+
+## MEME?
+
+---
+
+class: center, middle
+
+# Thanks
+
+## [@heycarsten](http://twitter.com/heycarsten) & [@ghedamat](http://twitter.com/ghedamat)
+
+### [Unspace](http://unspace.ca)
     </textarea>
     <script src="remark.js">
     </script>
