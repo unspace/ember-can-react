@@ -4,29 +4,76 @@
     <title>Ember can React</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
-      @import url(//fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
-      @import url(//fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
-      @import url(//fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+      @import url(http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700);
+      @import url(http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic);
+      @import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:500,700);
 
-      body { font-family: 'Droid Serif'; }
-      h1, h2, h3 {
-        font-family: 'Yanone Kaffeesatz';
-        font-weight: normal;
+      body {
+        font-family: 'Roboto';
+        font-weight: 400;
+        color: #333;
       }
+
+      b {
+        font-weight: 700;
+      }
+
+      h1, h2, h3 {
+        font-family: 'Roboto Condensed';
+        font-weight: 400;
+      }
+
+      h1 .remark-inline-code {
+        font-weight: 700;
+      }
+
+      h1 {
+        font-weight: 700;
+        color: #111;
+        letter-spacing: -0.02em;
+      }
+
       a, a:active, a:hover, a:visited {
         color: rgb(183, 48, 1);
+        text-decoration: none;
       }
-      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+
+      .remark-code, .remark-inline-code {
+        font-family: 'Source Code Pro';
+        font-weight: 500;
+      }
+
+      .remark-code {
+        font-size: 0.65em;
+      }
+
+      ul, ol {
+        margin: 0 auto;
+        font-size: 1.65em;
+        width: 66%;
+      }
+
+      p {
+        font-size: 1.65em;
+      }
+
+      li {
+        text-align: left;
+      }
+
+      small, sup {
+        font-size: 0.65em;
+        color: #777;
+      }
     </style>
   </head>
   <body>
     <textarea id="source">
-
 class: center, middle
 
 # Ember can React
 
-### a component based react-ember comparison
+### A component-based React / Ember comparison
 
 ---
 
@@ -34,96 +81,90 @@ class: center, middle
 
 ## [@heycarsten](http://twitter.com/heycarsten) & [@ghedamat](http://twitter.com/ghedamat)
 
-### [Unspace](http://unspace.ca)
+### [Unspace](https://unspace.ca)
 
 ---
 
-# Agenda
+class: center, middle
 
-### Why?
-### The problem
-### How to React
-### Can Ember do the same?
-
----
-class: center middle
-# Why?
-
----
-
-# Why?
-
-## Ember 2.0 is coming!
-
-## Bindings DOWN
-## Actions UP
-
----
-
-# Why?
-
-## React does it
-
-## We want to explore how we can already do it in Ember
-
----
-class: center middle
-# The Problem
-
----
-# The Problem
-## 1) Canada has a massive Alcoholism problem *
-## 2) LCBO to the rescue
-## 3) Only one store to buy beer
-## 4) Need to find the closest store with your beer**
-
-\* err.. no?
-
-\** they're always closed when you need them
-
----
-class: center middle
-## A wild API appears...
+![What if I told you, Ember can also React](what-if-i-told-you.jpg)
 
 ---
 class: center middle
 
-![heycarsten](heycarsten.jpg)
+![dafoe](dafoe.gif)
 
 ---
+
 class: center middle
 
-# [lcboapi.com](http://lcboapi.com)
----
-
-# Live documentation widget!
-## 1) select from default api endpoints
-## 2) customize the query
-## 3) display the results with syntax highlighting
+## In React everything is a component, data flows down via _bindings_, and up via _events_.
 
 ---
-class: center
 
-# Component all the things
+class: center middle
+
+## This is not possible in Ember and that is why everyone is abandoning it.
+
+---
+
+class: center middle
+
+<img src="trollface.png" width="75%">
+
+---
+
+class: center middle
+
+# Problem?
+
+---
+
+class: center middle
+
+# A Wild, Live API Explorer<br>Component _Appears_
+
+1. It lets the user to choose from preconfigured endpoints
+2. It lets the user to override the query path
+3. It formats and highlights the response
+
+---
+
+class: center middle
+
+<img src="lcboapi.png" width="100%">
+
+---
+
+class: center middle
+
+<img src="heycarsten.jpg" width="55%">
+
+### **BOOM**. _React hardstyle implementation &rsquo;bout to drop._
+
+<small>_(Thanks for this, Mattia.)_</small>
+
+---
+
+class: center middle
+
+# How to: React
+
+[Demo & Source](http://emberjs.jsbin.com/temuxi/latest/edit?html,js,output)
+
+---
+
+class: center middle
 
 ![component-all-the-things](component.jpg)
 
-## WARNING: Massive Code dump ahead
-
 ---
-class: center middle
-# Full Code example & Demo
+class: middle
 
-## [react](http://emberjs.jsbin.com/temuxi/latest/edit?html,js,output)
-## [ember](http://emberjs.jsbin.com/hiqini/latest/edit?html,js,output)
+# React Structure
 
----
-class: center middle
-# How to React
-
----
-# Component layout
 ```html
+<!-- JSX -->
 <TryItComponent>
   <div className="try-it-component">
     <div className="control-bar">
@@ -136,10 +177,12 @@ class: center middle
 ```
 
 ---
+class: middle
 
-# TryItComponent
+# `TryItComponent`
 
-## Holds all the state
+Holds state for current selection and path.
+
 ```javascript
 var TryItComponent = React.createClass({
   getInitialState: function() {
@@ -162,9 +205,10 @@ var TryItComponent = React.createClass({
 
 ---
 
-# TryItComponent
+# `TryItComponent`
 
-## The render method (wiring up)
+The `render` method inserts the child components:
+
 ```javascript
 var TryItComponent = React.createClass({
   render: function() {
@@ -186,9 +230,10 @@ var TryItComponent = React.createClass({
 
 ---
 
-# TryItEndpointSelector
+# `TryItEndpointSelector`
 
-### Holds only open/close state
+Holds state for open or closed.
+
 ```javascript
 var TryItEndpointSelector = React.createClass({
   getInitialState: function() {
@@ -210,22 +255,22 @@ var TryItEndpointSelector = React.createClass({
     this.setState({ isOpen: false });
   },
 
-  render: function() {/* JSX */ }
+  render: function() { /* JSX */ }
 });
 ```
 ---
 
-# TryItEndpointSelector
+# `TryItEndpointSelector`
 
 ```javascript
 var TryItEndpointSelector = React.createClass({
-  /*...*/
+  // ...
   render: function() {
     var classes = React.addons.classSet({
       'endpoint-selector': true,
       'open': this.state.isOpen
     });
-    /*...*/
+    // ...
     if (this.state.isOpen) {
       selector = (
         <TryItEndpointSelectList
@@ -251,7 +296,7 @@ var TryItEndpointSelector = React.createClass({
 
 ---
 
-# TryItEndpointSelectList
+# `TryItEndpointSelectList`
 
 ```javascript
 var TryItEndpointSelectList = React.createClass({
@@ -286,15 +331,14 @@ var TryItEndpointSelectList = React.createClass({
 
 ---
 
-# TryItEndpointOption & TryItEndpointPathInput
+# `TryItEndpointOption` & `TryItEndpointPathInput`
 
-### work in similar ways
-### once an element is selected or the input field is submitted
-### the `onSelected` or the `onSubmit` callbacks are triggered
+When an endpoint is selected, or the input field is submitted the the
+`onSelected` or the `onSubmit` callbacks are triggered.
 
 ---
 
-# TryItComponent
+# `TryItComponent`
 
 ```javascript
 var TryItComponent = React.createClass({
@@ -329,9 +373,10 @@ var TryItComponent = React.createClass({
 
 ---
 
-# TryItConsole
+# `TryItConsole`
 
-## receives the current json as a `props`
+Receives the current JSON as a passed property in `props`.
+
 ```javascript
 var TryItComponent = React.createClass({
   render: function() {
@@ -346,9 +391,9 @@ var TryItComponent = React.createClass({
 
 ---
 
-# TryItConsole
+# `TryItConsole`
 
-## dangerouslySetInnerHTML !!! *
+`dangerouslySetInnerHTML`<sup>*</sup>!!!
 
 ```javascript
 var TryItConsole = React.createClass({
@@ -368,24 +413,52 @@ var TryItConsole = React.createClass({
 });
 ```
 
-\* we actually kinda like this
+<small>_<sup>*</sup> We actually kind of like this._</small>
 
 ---
 
-# How to React
+class: center middle
 
-### state lives in `TryItComponent`
-### subcomponents get the state as `props`
-### subcomponents pass down callbacks
-### callbacks are called by subcomponents and "bubbled" up
-### `setState` in `TryItComponent`
+# React
+
+* State lives in `TryItComponent`
+* Subcomponents get the state as `props`
+* Subcomponents pass down callbacks
+* Callbacks are called by subcomponents and "bubbled" up
+* `setState` in `TryItComponent`
 
 ---
 class: center middle
-# Ember can React!
+
+# Okay, seems fine zro<sup>*</sup>&hellip;
+
+<small><sup>*</sup> Zro is a gender neutral form of "bro", now you know.</small>
+---
+
+class: center middle
+
+# But did you know?
 
 ---
-## Components layout
+
+class: center middle
+
+# Ember can React!
+
+<img src="carlton.gif">
+
+---
+
+class: center middle
+
+# How to: Ember
+
+[Demo & Source](http://emberjs.jsbin.com/hiqini/latest/edit?html,js,output)
+
+---
+
+# Ember Structure
+
 ```html
 <script type="text/x-handlebars" data-template-name="components/try-it">
   <div class="control-bar">
@@ -403,19 +476,21 @@ class: center middle
 ```
 
 ---
+
 class: center, middle
 
-# DONE
+# Done, and DONE.
 
 ---
 class: center, middle
 
-## Just kidding...
+# _Just kidding&hellip;_
 ---
 
-# TryItComponent
+# `TryItComponent`
 
-## Holds all the state
+Holds state for current selection and path.
+
 ```javascript
 App.TryItComponent = Ember.Component.extend({
   classNames: 'try-it-component',
@@ -443,9 +518,9 @@ App.TryItComponent = Ember.Component.extend({
 
 ---
 
-# TryItComponent
+# `TryItComponent`
 
-## Wiring it up
+Wiring it up:
 
 ```html
 <script type="text/x-handlebars" data-template-name="components/try-it">
@@ -462,14 +537,14 @@ App.TryItComponent = Ember.Component.extend({
   {{try-it-console json=json}}
 </script>
 ```
-### uses bindings and passes action names instead of callbacks
-### for now :)
+
+<small>Uses bindings and passes action names instead of callbacks&hellip; _for now._ :)</small>
 
 ---
 
-# TryItEndpointSelector
+# `TryItEndpointSelector`
 
-### Holds only open/close state
+Holds state for open or closed.
 
 ```javascript
 
@@ -495,7 +570,7 @@ App.TryItEndpointSelectorComponent = Ember.Component.extend({
 
 ---
 
-# TryItEndpointSelector
+# `TryItEndpointSelector`
 
 ```html
 <script type="text/x-handlebars"
@@ -515,7 +590,7 @@ App.TryItEndpointSelectorComponent = Ember.Component.extend({
 
 ---
 
-# TryItEndpointSelectorList
+# `TryItEndpointSelectorList`
 
 ```javascript
 App.TryItEndpointSelectorListComponent = Ember.Component.extend({
@@ -544,7 +619,7 @@ App.TryItEndpointSelectorListComponent = Ember.Component.extend({
 
 ---
 
-# TryItEndpointSelectorList
+# `TryItEndpointSelectorList`
 
 ```html
 <script type="text/x-handlebars"
@@ -561,16 +636,18 @@ App.TryItEndpointSelectorListComponent = Ember.Component.extend({
 ```
 ---
 
-# TryItEndpointSelectorListItem & TryItEndpointPathForm
+# `TryItEndpointSelectorListItem` & `TryItEndpointPathForm`
 
-### work in similar ways
-### once an element is selected or the input field is submitted
-### the `selected` or the `updated` actions are triggered
+* Work in similar ways
+* Once an element is selected or the input field is submitted
+* The `selected` or the `updated` actions are triggered
 
 ---
 
-# TryItEndpointPathForm
-## A thing to notice
+# `TryItEndpointPathForm`
+
+A thing to notice:
+
 ```javascript
 
 App.TryItEndpointPathFormComponent = Ember.Component.extend({
@@ -579,17 +656,18 @@ App.TryItEndpointPathFormComponent = Ember.Component.extend({
 
   didSubmit: function(event) {
     event.preventDefault();
-    /* send value with the action instead of using the binding */
+    // Send value with the action *instead* of using the binding
     this.sendAction('updated', this.get('path'));
   }.on('submit')
 });
 ```
 ---
 
-# TryItComponent
+# `TryItComponent`
+
 ```javascript
 App.TryItComponent = Ember.Component.extend({
-  /*...*/
+  // ...
   actions: {
     didSelectEndpoint: function(endpoint) {
       this.set('selectedEndpoint', endpoint);
@@ -610,15 +688,16 @@ App.TryItComponent = Ember.Component.extend({
       view.set('json', JSON.stringify(data, null, 2));
     });
   },
-  /*...*/
+  // ...
 });
 ```
 
 ---
 
-# TryItConsole
+# `TryItConsole`
 
-## receives the current json as a `binding`
+Receives the current JSON as a `binding`:
+
 ```html
 <script type="text/x-handlebars" data-template-name="components/try-it">
   ...
@@ -629,9 +708,10 @@ App.TryItComponent = Ember.Component.extend({
 
 ---
 
-# TryItConsole
+# `TryItConsole`
 
-## receives the current json as a `binding`
+Receives the current JSON as a `binding`:
+
 ```javascript
 App.TryItConsoleComponent = Ember.Component.extend({
   classNames: 'console',
@@ -648,62 +728,71 @@ App.TryItConsoleComponent = Ember.Component.extend({
 
 ---
 
-# How to Ember
+class: center middle
 
-### state lives in `TryItComponent`
-### subcomponents get the state as `bindings` (that we use one way)
-### subcomponents pass down action names
-### actions are sent by subcomponents and "bubbled" up
-### `set` in `TryItComponent`
+# Ember
 
----
-
-class: center, middle
-
-# Wrapping up
----
-
-class: center, middle
-
-![same](same.jpg)
----
-
-class: center, middle
-
-# And remember...
+* State lives in `TryItComponent`
+* Subcomponents get the state as `bindings` (that we use one way)
+* Subcomponents pass down action names
+* Actions are sent by subcomponents and "bubbled" up
+* `set` in `TryItComponent`
 
 ---
 
 class: center, middle
 
-# Bindings Down
-
-# Actions Up
+# Notice anything?
 
 ---
 
 class: center, middle
 
-# Controllers Left
+<img src="same.jpg" width="80%">
 
-# Yehuda's Right
+---
 
+class: center, middle
 
-### (credits @stefanpenner, @mixonic)
+# And remember&hellip;
+
+---
+
+class: center, middle
+
+# Bindings _Down_
+# Actions _Up_
+
+---
+
+class: center, middle
+
+# Controllers _Left_
+# Yehuda's _Right_
+
+<small>_Credit to @stefanpenner and @mixonic for this little bit of gold._</small>
+
 ---
 
 class: center, middle
 
 # Thanks
 
-## [@heycarsten](http://twitter.com/heycarsten) & [@ghedamat](http://twitter.com/ghedamat)
+[@heycarsten](http://twitter.com/heycarsten) & [@ghedamat](http://twitter.com/ghedamat)
 
-### [Unspace](http://unspace.ca)
+## Full Source & Demos
+
+[React](http://emberjs.jsbin.com/temuxi/latest/edit?html,js,output)<br>
+[Ember](http://emberjs.jsbin.com/hiqini/latest/edit?html,js,output)
+
+---
+
+class: center middle
+
+# [Unspace](http://unspace.ca)
     </textarea>
-    <script src="remark.js">
-    </script>
-    <script>
-      var slideshow = remark.create();
-    </script>
+
+    <script src="remark.js"></script>
+    <script>var slideshow = remark.create();</script>
   </body>
 </html>
