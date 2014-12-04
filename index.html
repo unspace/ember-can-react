@@ -40,10 +40,14 @@ class: center, middle
 
 # Agenda
 
-1. Why?
-2. The problem
-3. How to React
-4. Can Ember do the same?
+### Why?
+### The problem
+### How to React
+### Can Ember do the same?
+
+---
+class: center middle
+# Why?
 
 ---
 
@@ -63,41 +67,62 @@ class: center, middle
 ## We want to explore how we can already do it in Ember
 
 ---
-
+class: center middle
 # The Problem
 
-## [lcboapi.com](https://lcboapi.com)
-
-## Insert image of the search widget here
-
 ---
-
 # The Problem
+## 1) Canada has a massive Alcoholism problem *
+## 2) LCBO to the rescue
+## 3) Only one store to buy beer
+## 4) Need to find the closest store with your beer**
 
-## select from default api endpoints
-## customize the query
-## display the results with syntax highlighting
+\* err.. no?
+
+\** they're always closed when you need them
 
 ---
+class: center middle
+## A wild API appears...
+
+---
+class: center middle
+
+![heycarsten](/heycarsten.jpg)
+
+---
+class: center middle
+
+# [lcboapi.com](http://lcboapi.com)
+---
+
+# Live documentation widget!
+## 1) select from default api endpoints
+## 2) customize the query
+## 3) display the results with syntax highlighting
+
+---
+class: center
 
 # Component all the things
 
-## Add MEME
+![component-all-the-things](/component.jpg)
 
-## Warning Code dump ahead
+## WARNING: Massive Code dump ahead
 
 ---
-
+class: center middle
 # Full Code example & Demo
 
 ## [react](http://emberjs.jsbin.com/temuxi/latest/edit?html,js,output)
 ## [ember](http://emberjs.jsbin.com/hiqini/latest/edit?html,js,output)
 
 ---
-
+class: center middle
 # How to React
 
-## Component layout
+---
+# Component layout
 ```html
 <TryItComponent>
   <div className="try-it-component">
@@ -323,7 +348,8 @@ var TryItComponent = React.createClass({
 
 # TryItConsole
 
-## dangerouslySetInnerHTML !!!
+## dangerouslySetInnerHTML !!! *
+
 ```javascript
 var TryItConsole = React.createClass({
   componentDidUpdate: function() {
@@ -342,6 +368,8 @@ var TryItConsole = React.createClass({
 });
 ```
 
+\* we actually kinda like this
+
 ---
 
 # How to React
@@ -353,9 +381,10 @@ var TryItConsole = React.createClass({
 ### `setState` in `TryItComponent`
 
 ---
-
+class: center middle
 # Ember can React!
 
+---
 ## Components layout
 ```html
 <script type="text/x-handlebars" data-template-name="components/try-it">
@@ -540,6 +569,23 @@ App.TryItEndpointSelectorListComponent = Ember.Component.extend({
 
 ---
 
+# TryItEndpointPathForm
+## A thing to notice
+```javascript
+
+App.TryItEndpointPathFormComponent = Ember.Component.extend({
+  tagName: 'form',
+  classNames: 'endpoint-path-input',
+
+  didSubmit: function(event) {
+    event.preventDefault();
+    /* send value with the action instead of using the binding */
+    this.sendAction('updated', this.get('path'));
+  }.on('submit')
+});
+```
+---
+
 # TryItComponent
 ```javascript
 App.TryItComponent = Ember.Component.extend({
@@ -612,10 +658,38 @@ App.TryItConsoleComponent = Ember.Component.extend({
 
 ---
 
-# It ain't that different
+class: center, middle
 
-## MEME?
+# Wrapping up
+---
 
+class: center, middle
+
+![same](/same.jpg)
+---
+
+class: center, middle
+
+# And remember...
+
+---
+
+class: center, middle
+
+# Bindings Down
+
+# Actions Up
+
+---
+
+class: center, middle
+
+# Controllers Left
+
+# Yehuda's Right
+
+
+### (credits @stefanpenner, @mixonic)
 ---
 
 class: center, middle
