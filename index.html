@@ -271,7 +271,7 @@ var TryItEndpointSelector = React.createClass({
       'endpoint-selector': true,
       'open': this.state.isOpen
     });
-    // ...
+    // var selector ...
     if (this.state.isOpen) {
       selector = (
         <TryItEndpointSelectList
@@ -612,7 +612,9 @@ App.TryItEndpointSelectorListComponent = Ember.Component.extend({
 
     Ember.run.next(function() {
       Ember.$(document).one('click', function() {
-        view.sendAction('dismiss');
+        Ember.run(function() {
+          view.sendAction('dismiss');
+        });
       });
     });
 
